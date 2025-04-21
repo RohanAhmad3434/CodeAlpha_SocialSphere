@@ -32,7 +32,7 @@ Backend dependencies (package.json):
 
 🛠️ How to Run Locally
 1)Clone the repository:
-
+https://github.com/RohanAhmad3434/CodeAlpha_SocialSphere
 
 2)Navigate to the backend folder:
 cd SocialSphere/backend
@@ -50,8 +50,3 @@ node app.js
 6)Launch the frontend:
 Navigate to the frontend folder
 Open index.html in your browser
-
-
-
-
-
