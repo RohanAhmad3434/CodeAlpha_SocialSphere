@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Feed</title>
+
+ 
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .top-bar {
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .top-bar h1 {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .top-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .top-buttons button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .top-buttons button:hover {
+      background-color: #0056b3;
+    }
+
+    .top-buttons .btn-danger {
+      background-color: #dc3545;
+    }
+
+    .top-buttons .btn-danger:hover {
+      background-color: #a71d2a;
+    }
+
+    /* Post Grid */
+    .post-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .post-col {
+      flex: 1 1 calc(33.333% - 15px);
+      max-width: calc(33.333% - 15px);
+    }
+
+    @media (max-width: 992px) {
+      .post-col {
+        flex: 1 1 calc(50% - 15px);
+        max-width: calc(50% - 15px);
+      }
+    }
+
+    @media (max-width: 576px) {
+      .post-col {
+        flex: 1 1 100%;
+        max-width: 100%;
+      }
+    }
+
+    .post-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      transition: transform 0.2s;
+      font-size: 0.9rem;
+    }
+
+    .post-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .post-header {
+      padding: 10px 10px 0 10px;
+      background-color: #f1f1f1;
+      border-bottom: 1px solid #e3e3e3;
+    }
+
+    .post-header h5 {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .post-header p {
+      font-size: 0.8rem;
+      margin-bottom: 0;
+    }
+
+    .post-content {
+      padding: 10px;
+    }
+
+    .post-media {
+      border-radius: 6px;
+      margin-top: 10px;
+      width: 100%;
+      height: auto;
+      max-height: 150px;
+      object-fit: cover;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .like-btn,
+    .comment-btn {
+      background-color: transparent;
+      border: 1px solid #007bff;
+      color: #007bff;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .like-btn:hover,
+    .comment-btn:hover {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .comments p {
+      background-color: #f1f1f1;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 5px;
+      font-size: 0.85rem;
+    }
+
+    .pulse {
+      animation: pulseAnim 0.3s ease-in-out;
+    }
+
+    @keyframes pulseAnim {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+  </style>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Top Bar -->
+    <div class="top-bar d-flex flex-column flex-md-row justify-content-between align-items-center">
+      <h1>📰 Feed</h1>
+      <div class="top-buttons mt-3 mt-md-0">
+        <button class="btn btn-primary" onclick="window.location.href='create_post.html'">📝 Add New Post</button>
+        <button class="btn btn-primary" onclick="window.location.href='view_post.html'">📄 View Own Posts</button>
+        <button class="btn btn-primary" onclick="window.location.href='profile.html'">👤 Edit Profile</button>
+        <button class="btn btn-primary" onclick="window.location.href='all_users.html'">👥 Connect with others</button>
+        <button class="btn btn-primary" onclick="window.location.href='followers_following.html'">🔗 Followers & Following List</button>
+        <button class="btn btn-danger" onclick="logout()">🚪 Logout</button>
+      </div>
+    </div>
+
+    <div id="feed" class="post-row">
+      <!-- Dynamic posts will load here -->
+      <div class="post-col">
+        <!-- Example of a Post -->
+        <div class="post-card">
+          <div class="post-header">
+            <h5 class="post-title">Post Title</h5>
+            <p>Posted by <strong>User Name</strong> on 2025-04-20</p>
+          </div>
+          <div class="post-content">
+            <p>Here's the content of the post. It could be text, an image, or a video.</p>
+            <img class="post-media" src="https://via.placeholder.com/500x300" alt="Post Media">
+            <div class="d-flex mt-3">
+              <button class="btn btn-outline-primary like-btn">👍 Like</button>
+              <button class="btn btn-outline-primary comment-btn">💬 Comment</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="post-col">
+        <!-- Another Example of a Post -->
+        <div class="post-card">
+          <div class="post-header">
+            <h5 class="post-title">Another Post Title</h5>
+            <p>Posted by <strong>User Name</strong> on 2025-04-20</p>
+          </div>
+          <div class="post-content">
+            <p>Here's the content of another post.</p>
+            <img class="post-media" src="https://via.placeholder.com/500x300" alt="Post Media">
+            <div class="d-flex mt-3">
+              <button class="btn btn-outline-primary like-btn">👍 Like</button>
+              <button class="btn btn-outline-primary comment-btn">💬 Comment</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="assets/js/feed.js"></script>
+
+  <script>
+    function logout() {
+      localStorage.removeItem('userId');
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

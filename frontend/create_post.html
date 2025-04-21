@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Post</title>
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: Arial, sans-serif;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    textarea,
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #message {
+      margin-top: 15px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 20px;
+      background-color: #6c757d;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 5px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .back-btn:hover {
+      background-color: #5a6268;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button class="back-btn" onclick="window.location.href='feed.html'">← Back to Feed</button>
+
+    <h2>Create a New Post</h2>
+
+    <form id="postForm">
+      <label for="content" class="form-label">What's on your mind?</label>
+      <textarea id="content" rows="4" required></textarea>
+
+      <label for="media" class="form-label">Upload Media (Images or Videos)</label>
+      <input type="file" id="media" multiple accept="image/*,video/*" />
+
+      <button type="submit">Post</button>
+
+      <div id="message" class="text-success text-center mt-3"></div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        alert('User not logged in');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      document.getElementById('postForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const content = document.getElementById('content').value.trim();
+        const files = document.getElementById('media').files;
+
+        if (!content) {
+          alert('Post content cannot be empty!');
+          return;
+        }
+
+        try {
+          const postRes = await fetch('http://localhost:3000/api/posts/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content, user_id: userId })
+          });
+
+          const postData = await postRes.json();
+          if (!postRes.ok) throw new Error(postData.error || 'Failed to create post');
+
+          const postId = postData.postId;
+
+          if (files.length > 0) {
+            const formData = new FormData();
+            for (let file of files) {
+              formData.append('media', file);
+            }
+            formData.append('postId', postId);
+
+            const mediaRes = await fetch(`http://localhost:3000/api/media/add`, {
+              method: 'POST',
+              body: formData
+            });
+
+            const mediaData = await mediaRes.json();
+            if (!mediaRes.ok) throw new Error(mediaData.error || 'Failed to upload media');
+          }
+
+          document.getElementById('message').textContent = '✅ Post created successfully!';
+          alert('Post created successfully!');
+          setTimeout(() => window.location.href = 'feed.html', 1200);
+
+        } catch (err) {
+          document.getElementById('message').textContent = '❌ ' + err.message;
+          console.error(err);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
